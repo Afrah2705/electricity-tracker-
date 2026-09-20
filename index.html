@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Energy Consumption Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Chart.js for creating charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1>⚡ Home Energy Consumption Tracker</h1>
+                <p class="subtitle">Monitor and analyze your household electricity usage</p>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Input Section -->
+            <section class="input-section">
+                <div class="section-header">
+                    <h2>Add Appliances</h2>
+                </div>
+
+                <!-- Electricity Tariff Input -->
+                <div class="tariff-input">
+                    <label for="tariff">Electricity Tariff (₹ per kWh):</label>
+                    <input type="number" id="tariff" placeholder="Enter tariff rate (e.g., 5.5)" min="0" step="0.01" value="7.5">
+                    <small class="help-text">Enter your local electricity rate per kilowatt-hour</small>
+                </div>
+
+                <!-- Appliance Input Form -->
+                <form id="applianceForm" class="appliance-form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="applianceName">Appliance Name:</label>
+                            <input type="text" id="applianceName" placeholder="e.g., Air Conditioner" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="powerRating">Power Rating (Watts):</label>
+                            <input type="number" id="powerRating" placeholder="e.g., 1500" min="1" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="quantity">Quantity:</label>
+                            <input type="number" id="quantity" placeholder="e.g., 1" min="1" value="1" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="hoursPerDay">Hours per Day:</label>
+                            <input type="number" id="hoursPerDay" placeholder="e.g., 8" min="0" max="24" step="0.5" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="daysPerMonth">Days per Month:</label>
+                            <input type="number" id="daysPerMonth" placeholder="e.g., 30" min="1" max="31" value="30" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Add Appliance</button>
+                    <small class="help-text">Fill all fields and click to add an appliance to your list</small>
+                </form>
+            </section>
+
+            <!-- Summary Cards Section -->
+            <section class="summary-section">
+                <div class="summary-cards">
+                    <div class="card">
+                        <div class="card-icon">📱</div>
+                        <div class="card-content">
+                            <div class="card-label">Total Appliances</div>
+                            <div class="card-value" id="totalAppliances">0</div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-icon">⚡</div>
+                        <div class="card-content">
+                            <div class="card-label">Total Monthly Consumption</div>
+                            <div class="card-value" id="totalConsumption">0 kWh</div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-icon">💰</div>
+                        <div class="card-content">
+                            <div class="card-label">Estimated Monthly Bill</div>
+                            <div class="card-value" id="estimatedBill">₹0</div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-icon">🔴</div>
+                        <div class="card-content">
+                            <div class="card-label">Highest Consumer</div>
+                            <div class="card-value" id="highestConsumer">-</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Appliances Table Section -->
+            <section class="table-section">
+                <div class="section-header">
+                    <h2>Appliances Summary</h2>
+                </div>
+
+                <div id="tableContainer" class="table-container">
+                    <table id="appliancesTable" class="appliances-table">
+                        <thead>
+                            <tr>
+                                <th>Appliance</th>
+                                <th>Watts</th>
+                                <th>Qty</th>
+                                <th>Hours/Day</th>
+                                <th>Days/Month</th>
+                                <th>Monthly kWh</th>
+                                <th>Monthly Cost (₹)</th>
+                                <th>% of Total</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="appliancesBody">
+                        </tbody>
+                    </table>
+                    <div id="emptyMessage" class="empty-message">
+                        <p>No appliances added yet. Add your first appliance to get started!</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Charts Section -->
+            <section class="charts-section" id="chartsSection" style="display: none;">
+                <div class="section-header">
+                    <h2>Energy Consumption Analysis</h2>
+                </div>
+
+                <div class="charts-grid">
+                    <div class="chart-container">
+                        <h3>Pie Chart - Energy Distribution</h3>
+                        <canvas id="pieChart"></canvas>
+                    </div>
+
+                    <div class="chart-container">
+                        <h3>Bar Chart - Monthly Consumption</h3>
+                        <canvas id="barChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Analysis Section -->
+            <section class="analysis-section" id="analysisSection" style="display: none;">
+                <div class="section-header">
+                    <h2>Detailed Analysis</h2>
+                </div>
+
+                <div class="analysis-content" id="analysisContent">
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2025 Home Energy Consumption Tracker | For Educational and Personal Use</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
